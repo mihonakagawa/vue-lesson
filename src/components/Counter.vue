@@ -6,15 +6,14 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex';
+
 export default {
-  props: {
-    count: Number,
+  computed: {
+    ...mapState(['count']),
   },
   methods: {
-    incrementCount() {
-      // this.count++;
-      this.$emit('increment');
-    }
-  }
+    ...mapActions(['incrementCount']),
+  },
 }
 </script>

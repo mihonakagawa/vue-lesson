@@ -47,12 +47,12 @@
         <span>slot content</span>
       </child-component>
     </template>
-    <hr>
+    <!-- <hr>
     <button @click="incrementCount">Add to count</button>
-    <p>{{ count }}回クリックしました</p>
+    <p>{{ count }}回クリックしました</p> -->
     <hr>
     <!-- 下記をCounter.vueというコンポーネントにする -->
-    <counter :count="count"></counter>
+    <counter></counter>
     <hr>
     <input type="text" v-model="inputText">
     <p>computed: {{ getUpperCaseText }}</p>
@@ -155,7 +155,7 @@
         description: '',
         isShow: true,
         id: 2,
-        count: 0,
+        // count: 0,//storで管理するため削除
         inputText: '',
         classObject: {
           'is-green': true,
