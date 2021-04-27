@@ -14,8 +14,9 @@
     add desciption
     </button>
     <hr>
+    <!-- v-showディレクティブは、style属性のdisplayプロパティで表示を切り替えているので、非表示になってもVueインスタンスが破棄されたことにならないので、beforeDestroy、後述するdestroyedライフサイクルフックが実行されない -->
     <child-component
-      v-show="isShow"
+      v-if="isShow"
     >
       <template #head>
         <p>head slot</p>
@@ -28,6 +29,7 @@
         <p>foot slot</p>
       </template>
     </child-component>
+    <button @click="toggleShow">toggle isShow</button>
     <hr>
     <p v-if="id === 1">1</p>
     <template v-else-if="id === 2">
@@ -49,19 +51,12 @@
     <button @click="incrementCount">Add to count</button>
     <p>{{ count }}回クリックしました</p>
     <hr>
+    <!-- 下記をCounter.vueというコンポーネントにする -->
+    <counter :count="count"></counter>
+    <hr>
     <input type="text" v-model="inputText">
     <p>computed: {{ getUpperCaseText }}</p>
     <p>methods: {{ showUpperCaseText() }}</p>
-    <hr>
-    <form>
-      <div>
-        <span>名前:</span>
-        <input type="text"
-        :value="form.name"
-        >
-        <p>名前: {{ getInputName }}</p>
-      </div>
-    </form>
     <hr>
     <template v-for="category in categories">
       <p :key="$uuid.v4()">
@@ -69,14 +64,87 @@
       </p>
     </template>
     <button @click="updateText">update text</button>
+    <form>
+      <div>
+        <span>名前:</span>
+        <input-text v-model="form.name"></input-text>
+        <p>名前: {{ getInputName }}</p>
+      </div>
+      <div>
+        <span>性別:</span>
+        <label>
+          男性
+          <input type="radio" value="male" v-model="form.sex">
+        </label>
+        <label>
+          女性
+          <input type="radio" value="female" v-model="form.sex">
+        </label>
+        <p>性別: {{ getRadioValue }}</p>
+      </div>
+      <div>
+        <select v-model="form.selected">
+          <option disabled value="">--出身地を選択してください--</option>
+          <option v-for="option in form.options"
+            :value="option.value"
+            :key="option.id"
+          >
+            {{ option.value }}
+          </option>
+        </select>
+        <p>出身地:{{ getSelectValue }}</p>
+      </div>
+      <div>
+        <label>
+          <input type="checkbox" v-model="form.checked">
+          20際以上です
+        </label>
+        <p>チェックボックス: {{ getCheckBoxValue }}</p>
+      </div>
+    </form>
     <hr>
+    <article v-for="post in posts"
+      :key="$uuid.v4()"
+    >
+      <h2>{{ post.title }}</h2>
+      <p>{{ post.body }}</p>
+    </article>
   </div>
 </template>
 
 <script>
   import ChildComponent from 'Components/ChildComponent';
+  import Counter from 'Components/Counter';
+  import InputText from 'Components/InputText';
+  import axios from 'axios';
+  // axios:PromiseベースのHTTPクライアントのモジュール
 
   export default {
+    beforeCreate() {
+      console.log('beforeCreate');
+      console.log(this.leads); //undefined
+    },
+    created() {
+      console.log('created');
+      console.log(this.posts);
+      axios.get('/data.json').then(res => {
+        this.posts = res.data.posts;
+      });
+    },
+    beforeMount() {
+      console.log("beforeMount");
+      console.log(this.$el);//undefined
+    },
+    mounted() {
+      console.log('mounted');
+      console.log(this.$el);
+    },
+    beforeUpdate() {
+      console.log('beforeUpdate');
+    },
+    updated() {
+      console.log('updated');
+    },
     data() {
       return {
         leads: {
@@ -106,10 +174,37 @@
               title: '3番目のリスト',
             }
           ],
-          form: {
-            name: '',
-          },
-          categories: ['Javascript', 'jQuery'],
+        form: {
+          name: '',
+          sex: '',
+          selected: '',
+          options:[
+            {
+              id: this.$uuid.v4(),
+              value: '東京都',
+            },
+            {
+              id: this.$uuid.v4(),
+              value: '埼玉県',
+            },
+            {
+              id: this.$uuid.v4(),
+              value: '神奈川県',
+            },
+            {
+              id: this.$uuid.v4(),
+              value: '千葉県',
+            },
+          ],
+          checked: false,
+        },
+        categories: ['Javascript', 'jQuery'],
+        components: {
+          ChildComponent,
+          Counter,
+          InputText,
+        },
+        posts: [],
       }
     },
     methods: {
@@ -127,9 +222,10 @@
         // console.log(this.description);
       },
       changeTextSize() {
-        this.classObject = Object.assign({}, this.classObject, {
-          'is-large': true,
-        });
+        this.classObject = {...this.classObject, 'is-large': true};
+      },
+      toggleShow() {
+        this.isShow = !this.isShow;
       },
       updateText() {
         this.categories.splice(1, 1, 'Vue.js');
@@ -142,6 +238,15 @@
       }
     },
     computed: {
+      getRadioValue() {
+        return this.form.sex;
+      },
+      getSelectValue() {
+        return this.form.selected;
+      },
+      getCheckBoxValue() {
+        return this.form.checked;
+      },
       getUpperCaseText() {
         const upperCaseText = this.inputText.toUpperCase();
         // console.log('computed: ${upperCaseText}');
