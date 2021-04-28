@@ -47,11 +47,16 @@
         <span>slot content</span>
       </child-component>
     </template>
-    <!-- <hr>
-    <button @click="incrementCount">Add to count</button>
-    <p>{{ count }}回クリックしました</p> -->
+    <!-- <hr> -->
+    <!-- <button @click="incrementCount">Add to count</button> -->
+    <!-- <p>{{ count }}回クリックしました</p> -->
     <hr>
     <!-- 下記をCounter.vueというコンポーネントにする -->
+    <!-- <counter
+    :count="count"
+    @increment="incrementCount"
+    >
+    </counter> -->
     <counter></counter>
     <hr>
     <input type="text" v-model="inputText">
@@ -103,9 +108,7 @@
       </div>
     </form>
     <hr>
-    <article v-for="post in posts"
-      :key="$uuid.v4()"
-    >
+    <article v-for="post in posts" :key="$uuid.v4()">
       <h2>{{ post.title }}</h2>
       <p>{{ post.body }}</p>
     </article>
@@ -201,6 +204,8 @@
         categories: ['Javascript', 'jQuery'],
         components: {
           ChildComponent,
+          // ChildComponent: ChildComponent,と同義
+          // vue-loaderによって、 'child-component': ChildComponent,と同義になる
           Counter,
           InputText,
         },
@@ -275,6 +280,8 @@
     },
     components: {
       ChildComponent,
+      Counter,
+      InputText,
     }
   }
 </script>

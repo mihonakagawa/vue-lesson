@@ -10,10 +10,14 @@ import { mapState, mapActions } from 'vuex';
 
 export default {
   computed: {
-    ...mapState(['count']),
+    ...mapState('count', {
+      count: state => state.count,
+    }),
   },
   methods: {
-    ...mapActions(['incrementCount']),
+    ...mapActions('count',[
+      'incrementCount',
+    ]),
   },
 }
 </script>
