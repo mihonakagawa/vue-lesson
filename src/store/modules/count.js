@@ -16,7 +16,6 @@ const mutations = {
 
 export default {
   namespaced: true,
-  // 名前空間の登録
   state,
   actions,
   mutations

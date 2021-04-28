@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- 1 -->
     <h1
     v-html="message"
     :class="classObject"
@@ -14,7 +15,7 @@
     add desciption
     </button>
     <hr>
-    <!-- v-showディレクティブは、style属性のdisplayプロパティで表示を切り替えているので、非表示になってもVueインスタンスが破棄されたことにならないので、beforeDestroy、後述するdestroyedライフサイクルフックが実行されない -->
+    <!-- 2 -->
     <child-component
       v-if="isShow"
     >
@@ -31,6 +32,7 @@
     </child-component>
     <button @click="toggleShow">toggle isShow</button>
     <hr>
+    <!-- 3 -->
     <p v-if="id === 1">1</p>
     <template v-else-if="id === 2">
       <p>2-1</p>
@@ -39,6 +41,7 @@
     </template>
     <p v-else>other</p>
     <hr>
+    <!-- 4 -->
     <template v-for="item in items">
       <child-component
       :key="item.id"
@@ -47,28 +50,25 @@
         <span>slot content</span>
       </child-component>
     </template>
-    <!-- <hr> -->
-    <!-- <button @click="incrementCount">Add to count</button> -->
-    <!-- <p>{{ count }}回クリックしました</p> -->
     <hr>
-    <!-- 下記をCounter.vueというコンポーネントにする -->
-    <!-- <counter
-    :count="count"
-    @increment="incrementCount"
-    >
-    </counter> -->
+    <!-- 5 -->
     <counter></counter>
     <hr>
+    <!-- 6 -->
     <input type="text" v-model="inputText">
     <p>computed: {{ getUpperCaseText }}</p>
     <p>methods: {{ showUpperCaseText() }}</p>
     <hr>
+    <!-- 7 -->
     <template v-for="category in categories">
       <p :key="$uuid.v4()">
         {{ category }}
       </p>
     </template>
     <button @click="updateText">update text</button>
+    <br>
+    <hr>
+    <!-- 8 -->
     <form>
       <div>
         <span>名前:</span>
@@ -108,6 +108,7 @@
       </div>
     </form>
     <hr>
+    <!-- 9 -->
     <article v-for="post in posts" :key="$uuid.v4()">
       <h2>{{ post.title }}</h2>
       <p>{{ post.body }}</p>
@@ -120,7 +121,6 @@
   import Counter from 'Components/Counter';
   import InputText from 'Components/InputText';
   import axios from 'axios';
-  // axios:PromiseベースのHTTPクライアントのモジュール
 
   export default {
     beforeCreate() {
@@ -151,14 +151,13 @@
     data() {
       return {
         leads: {
-          message: '<span>Hello Vue</span>',
+          // message: '<span>Hello Vue</span>',
           description: '',
         },
         message: '<span>Hello Vue</span>',
         description: '',
         isShow: true,
         id: 2,
-        // count: 0,//storで管理するため削除
         inputText: '',
         classObject: {
           'is-green': true,
@@ -204,8 +203,6 @@
         categories: ['Javascript', 'jQuery'],
         components: {
           ChildComponent,
-          // ChildComponent: ChildComponent,と同義
-          // vue-loaderによって、 'child-component': ChildComponent,と同義になる
           Counter,
           InputText,
         },
@@ -234,12 +231,6 @@
       },
       updateText() {
         this.categories.splice(1, 1, 'Vue.js');
-        //配列名.splice() …… 配列から要素を削除・追加して組み替える
-        // $set（配列やオブジェクトの更新）でも可
-        // updateText() {
-        //   this.$set(this.categories, 1, 'Vue.js');
-        // }
-        // $set(変更したい配列,インデックス,変更したい値)
       }
     },
     computed: {
@@ -262,8 +253,6 @@
       }
     },
     watch: {
-      // メソッド名は監視したいdataのプロパティ名
-      // 第1引数には現在の値、第2引数には前回の値
       inputText(value, oldValue) {
         console.log(`value -> ${value}`);
         console.log(`oldValue -> ${oldValue}`);
@@ -273,9 +262,6 @@
           console.log('add description');
         },
         deep: true,
-        // options引数にdeep: trueを渡すことで、
-        // オブジェクトの中のネスト(入れ子)された値の変更を検出できる。
-        // ※監視する際のコールバック処理はhandlerに記述します。
       }
     },
     components: {
